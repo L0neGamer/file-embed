@@ -3,18 +3,29 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Data.FileEmbed.RelativePath
-  ( -- * Relative path manipulation
-    makeRelativeToProject,
+  ( makeRelativeToProject,
     makeRelativeToLocationPredicate,
+    getDir,
   )
 where
 
+import Control.Arrow ((&&&))
+import Control.Monad (filterM)
+import Data.Bitraversable (bitraverse)
+import qualified Data.ByteString as B
+import Data.List (sortBy)
+import Data.Ord (comparing)
 import Language.Haskell.TH.Syntax
   ( Quasi (..),
     loc_filename,
     qLocation,
   )
-import System.Directory (canonicalizePath, getDirectoryContents)
+import System.Directory
+  ( canonicalizePath,
+    doesDirectoryExist,
+    doesFileExist,
+    getDirectoryContents,
+  )
 import System.FilePath (takeDirectory, takeExtension, (</>))
 import Prelude as P
 
@@ -66,3 +77,29 @@ makeRelativeToLocationPredicate isTargetFile rel = do
           if any isTargetFile contents
             then return (Just dir)
             else findProjectDir dir
+
+-- not the same as the other two functions but gets files relative to a root
+
+-- | Given a root folder, recursively get all files found in all subdirectories.
+-- Sorts by filepath.
+--
+-- Skips "hidden" files; specifically, those with a `.` at the front.
+getDir :: FilePath -> IO [(FilePath, B.ByteString)]
+getDir root = fileList ""
+  where
+    fileList :: FilePath -> IO [(FilePath, B.ByteString)]
+    fileList top = do
+      allContents <- filter notHidden <$> getDirectoryContents (root </> top)
+      let -- relative paths from root and absolute paths from root for each file
+          relAndAbsPaths :: [(FilePath, FilePath)] = map ((top </>) &&& ((root </> top) </>)) allContents
+      files <-
+        filterM (doesFileExist . snd) relAndAbsPaths
+          >>= mapM (bitraverse pure B.readFile)
+      dirs <-
+        filterM (doesDirectoryExist . snd) relAndAbsPaths
+          >>= mapM (fileList . fst)
+      return $ sortBy (comparing fst) $ concat $ files : dirs
+      where
+        notHidden :: FilePath -> Bool
+        notHidden ('.' : _) = False
+        notHidden _ = True

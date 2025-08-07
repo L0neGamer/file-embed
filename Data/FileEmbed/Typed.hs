@@ -151,7 +151,7 @@ readExistingFile readFile' xs = do
 -- @since 0.1.0.0
 embedDir :: (Quasi m, Quote m) => FilePath -> Code m [(FilePath, B.ByteString)]
 embedDir fp = do
-  qRunIO (fileList fp) `bindCode` (convertList . fmap (pairToExp fp))
+  qRunIO (getDir fp) `bindCode` (convertList . fmap (pairToExp fp))
   where
   pairToExp :: forall m . (Quote m, Quasi m) => FilePath -> (FilePath, B.ByteString) -> Code m (FilePath, B.ByteString)
   pairToExp root (path, bs) = do
@@ -165,7 +165,7 @@ embedDir fp = do
 -- @since 0.1.0.0
 embedDirListing :: (Quote m, Quasi m) => FilePath -> Code m [FilePath]
 embedDirListing fp = do
-  qRunIO (fileList fp) `bindCode` (convertList . fmap (strToExp . fst))
+  qRunIO (getDir fp) `bindCode` (convertList . fmap (strToExp . fst))
 
 -- | Utility to turn a list of Codes into a Code of a list.
 convertList :: (Quote m) => [Code m a] -> Code m [a]
@@ -210,25 +210,3 @@ embedOneStringFileOf ps =
 -- | Lifts a stringy value into TH.
 strToExp :: (IsString s, Quote m) => String -> Code m s
 strToExp s = [|| fromString s ||]
-
--- | Given a root folder, recursively get all files found in all subdirectories.
--- Sorts by filepath.
---
--- Skips "hidden" files; specifically, those with a `.` at the front.
-fileList :: FilePath -> IO [(FilePath, B.ByteString)]
-fileList root = fileList' ""
-  where
-  fileList' :: FilePath -> IO [(FilePath, B.ByteString)]
-  fileList' top = do
-    allContents <- filter notHidden <$> getDirectoryContents (root </> top)
-    let -- relative paths from root and absolute paths from root for each file
-        relAndAbsPaths :: [(FilePath, FilePath)] = map ((top </>) &&& ((root </> top) </>)) allContents
-    files <- filterM (doesFileExist . snd) relAndAbsPaths >>=
-            mapM (bitraverse pure B.readFile)
-    dirs <- filterM (doesDirectoryExist . snd) relAndAbsPaths >>=
-            mapM (fileList' . fst)
-    return $ sortBy (comparing fst) $ concat $ files : dirs
-    where
-    notHidden :: FilePath -> Bool
-    notHidden ('.':_) = False
-    notHidden _ = True
