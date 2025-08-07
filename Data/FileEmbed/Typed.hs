@@ -48,26 +48,20 @@ import Language.Haskell.TH.Syntax
     ( Quasi(..), Quote, Code, unsafeCodeCoerce, bindCode, Exp (LitE), bindCode_,
     )
 import Language.Haskell.TH ( mkBytes, bytesPrimL )
-import qualified Data.ByteString.Internal as B
-import System.Directory (doesDirectoryExist, doesFileExist,
-                         getDirectoryContents)
+import System.Directory (doesFileExist)
 import Control.Exception (tryJust)
 import Control.Monad (filterM, guard)
 import qualified Data.ByteString as B
+import qualified Data.ByteString.Internal as B
 import qualified Data.ByteString.Char8 as B8
-import Control.Arrow ((&&&))
 import Data.ByteString.Unsafe (unsafePackAddressLen)
 import System.IO.Error (isDoesNotExistError)
 import System.IO.Unsafe (unsafePerformIO)
-import System.FilePath ((</>))
 import Data.String (fromString, IsString)
 import Prelude as P
-import Data.List (sortBy)
-import Data.Ord (comparing)
 import Data.Functor (($>))
 import GHC.Exts (Addr#)
-import Data.Bitraversable (bitraverse)
-import Data.FileEmbed.RelativePath (makeRelativeToProject)
+import Data.FileEmbed.RelativePath (makeRelativeToProject, getDir)
 
 -- | Embed a single file in your source code.
 --
