@@ -23,6 +23,9 @@
 -- > {-# LANGUAGE TemplateHaskell #-}
 --
 -- Note that this module is the typed variant of @Data.FileEmbed@.
+-- As a result, you'll have to use 'bindCode' to use 'Data.FileEmbed.RelativePath'
+-- with the functions in this module, and as such it is re-exported for your
+-- convenience.
 module Data.FileEmbed.Typed
     ( -- * Embed at compile time
       embedFile
@@ -34,6 +37,8 @@ module Data.FileEmbed.Typed
       -- * Embed as a IsString
     , embedStringFile
     , embedOneStringFileOf
+      -- * Re-exports
+    , bindCode
     ) where
 
 import Language.Haskell.TH.Syntax
