@@ -61,7 +61,7 @@ padSize i =
 -- | Allocate the given number of bytes in the generate executable. That space
 -- can be filled up with the 'inject' and 'injectFile' functions.
 --
--- This version is typed and requires typed template haskell.
+-- See @dummySpace@ for an untyped variant.
 --
 -- @since 0.1.0.0
 dummySpaceTyped :: (Quote m) => Int -> Code m B.ByteString
@@ -69,6 +69,8 @@ dummySpaceTyped = dummySpaceWithTyped "MS"
 
 -- | Allocate the given number of bytes in the generate executable. That space
 -- can be filled up with the 'inject' and 'injectFile' functions.
+--
+-- See @dummySpaceTyped@ for a typed variant.
 --
 -- @since 0.0.4
 dummySpace :: Int -> Q Exp
@@ -79,7 +81,7 @@ dummySpace = dummySpaceWith "MS"
 -- 'injectFile'.  This allows an executable to have multiple
 -- 'ByteString's injected into it, without encountering collisions.
 --
--- This version is typed and requires typed template haskell.
+-- See @dummySpaceWith@ for an untyped variant.
 --
 -- @since 0.1.0.0
 dummySpaceWithTyped :: (Quote m) => B.ByteString -> Int -> Code m B.ByteString
@@ -104,6 +106,8 @@ dummySpaceWithTyped postfix space = do
 -- order for this to work, the same postfix must be used by 'inject' /
 -- 'injectFile'.  This allows an executable to have multiple
 -- 'ByteString's injected into it, without encountering collisions.
+--
+-- See @dummySpaceWithTyped@ for a typed variant.
 --
 -- @since 0.0.8
 dummySpaceWith :: B.ByteString -> Int -> Q Exp

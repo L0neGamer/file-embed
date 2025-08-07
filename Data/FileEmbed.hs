@@ -17,6 +17,9 @@
 -- top of your module:
 --
 -- > {-# LANGUAGE TemplateHaskell #-}
+--
+-- We also have @Data.FileEmbed.Typed@ for typed versions of @Q Exp@ functions
+-- in this module.
 module Data.FileEmbed
     ( -- * Embed at compile time
       embedFile
