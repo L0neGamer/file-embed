@@ -1,5 +1,11 @@
 # ChangeLog for file-embed
 
+## 0.1.0.0
+
+* Add typed variants of all `Data.FileEmbed` functions in `Data.FileEmbed.Typed`
+* Bump minimum `template-haskell` to 2.17.0.0 for typed TH
+* Split out some of the utilities in `Data.FileEmbed` to their own modules
+
 ## 0.0.16.0
 
 * Add `embedFileRelative`
