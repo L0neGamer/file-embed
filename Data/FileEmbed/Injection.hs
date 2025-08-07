@@ -105,7 +105,7 @@ dummySpaceWithTyped postfix space = do
 -- | Like 'dummySpace', but takes a postfix for the magic string.  In
 -- order for this to work, the same postfix must be used by 'inject' /
 -- 'injectFile'.  This allows an executable to have multiple
--- 'B.ByteString's injected into it, without encountering collisions.
+-- 'ByteString' s injected into it, without encountering collisions.
 --
 -- See 'dummySpaceWithTyped' for a typed variant.
 --
@@ -113,8 +113,8 @@ dummySpaceWithTyped postfix space = do
 dummySpaceWith :: B.ByteString -> Int -> Q Exp
 dummySpaceWith postfix space = unTypeCode $ dummySpaceWithTyped postfix space
 
--- | Inject some raw data inside a 'B.ByteString' containing empty, dummy space
--- (allocated with 'dummySpace'). Typically, the original 'B.ByteString' is an
+-- | Inject some raw data inside a 'ByteString' containing empty, dummy space
+-- (allocated with 'dummySpace'). Typically, the original 'ByteString' is an
 -- executable read from the filesystem.
 --
 -- @since 0.0.4

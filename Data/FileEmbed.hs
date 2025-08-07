@@ -4,15 +4,15 @@
 {-# LANGUAGE RankNTypes #-}
 -- | This module uses template Haskell. Following is a simplified explanation of usage for those unfamiliar with calling Template Haskell functions.
 --
--- The function @embedFile@ in this modules embeds a file into the executable
--- that you can use it at runtime. A file is represented as a @ByteString@.
+-- The function 'embedFile' in this modules embeds a file into the executable
+-- that you can use it at runtime. A file is represented as a 'ByteString'.
 -- However, as you can see below, the type signature indicates a value of type
--- @Q Exp@ will be returned. In order to convert this into a @ByteString@, you
+-- @Q Exp@ will be returned. In order to convert this into a 'ByteString', you
 -- must use Template Haskell syntax, e.g.:
 --
 -- > $(embedFile "myfile.txt")
 --
--- This expression will have type @ByteString@. Be certain to enable the
+-- This expression will have type 'ByteString'. Be certain to enable the
 -- TemplateHaskell language extension, usually by adding the following to the
 -- top of your module:
 --
