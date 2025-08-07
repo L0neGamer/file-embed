@@ -39,6 +39,9 @@ module Data.FileEmbed.Typed
     , embedOneStringFileOf
       -- * Re-exports
     , bindCode
+      -- * Internals
+    , bsToExp
+    , strToExp
     ) where
 
 import Language.Haskell.TH.Syntax
@@ -172,6 +175,7 @@ convertList :: (Quote m) => [Code m a] -> Code m [a]
 convertList =
   foldr (\a z -> [|| $$a : $$z ||]) [|| [] ||]
 
+{-# WARNING in "x-file-embed-internals" bsToExp "This function is meant for internal `file-embed` use" #-}
 -- | Embed a bytestring into a static string.
 bsToExp :: Quote m => B.ByteString -> Code m B.ByteString
 bsToExp bs =
@@ -207,6 +211,7 @@ embedOneStringFileOf :: (IsString s, Quote m, Quasi m) => [FilePath] -> Code m s
 embedOneStringFileOf ps =
   readExistingFile P.readFile ps `bindCode` strToExp
 
+{-# WARNING in "x-file-embed-internals" strToExp "This function is meant for internal `file-embed` use" #-}
 -- | Lifts a stringy value into TH.
 strToExp :: (IsString s, Quote m) => String -> Code m s
 strToExp s = [|| fromString s ||]

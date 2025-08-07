@@ -42,6 +42,11 @@ module Data.FileEmbed
       -- * Relative path manipulation
     , makeRelativeToProject
     , makeRelativeToLocationPredicate
+    , getDir
+    -- * Internal
+    , stringToBs
+    , bsToExp
+    , strToExp
     ) where
 
 import qualified Data.FileEmbed.Typed as Typed
@@ -54,8 +59,10 @@ import Data.FileEmbed.Injection
       injectWith,
       injectFileWith )
 import Data.FileEmbed.RelativePath
-    (makeRelativeToProject, makeRelativeToLocationPredicate)
+    (makeRelativeToProject, makeRelativeToLocationPredicate, getDir)
 import Data.String (fromString)
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as B8
 
 -- | Embed a single file in your source code.
 --
@@ -153,3 +160,17 @@ embedOneStringFileOf =
 -- again.
 stringyAsIsString :: Code Q String -> Q Exp
 stringyAsIsString s = (VarE 'fromString `AppE`) <$> unTypeCode s
+
+{-# WARNING in "x-file-embed-internals" bsToExp "This function is meant for internal `file-embed` use" #-}
+-- | Embed a bytestring into a static string.
+bsToExp :: B.ByteString -> Q Exp
+bsToExp = unTypeCode . Typed.bsToExp
+
+{-# WARNING in "x-file-embed-internals" strToExp "This function is meant for internal `file-embed` use" #-}
+-- | Lifts a stringy value into TH.
+strToExp :: String -> Q Exp
+strToExp = stringyAsIsString . Typed.strToExp
+
+{-# DEPRECATED stringToBs "Use Data.ByteString.Char8.pack instead" #-}
+stringToBs :: String -> B.ByteString
+stringToBs = B8.pack
