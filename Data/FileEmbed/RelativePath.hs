@@ -32,7 +32,7 @@ import Prelude as P
 --
 -- @$(makeRelativeToProject "data/foo.txt" >>= embedFile)@
 --
--- @$$(makeRelativeToProject "data/foo.txt" `bindCode` Typed.embedFile)@
+-- @$$(makeRelativeToProject "data/foo.txt" \`bindCode\` Typed.embedFile)@
 --
 -- @since 0.0.10
 makeRelativeToProject :: (Quasi m) => FilePath -> m FilePath
