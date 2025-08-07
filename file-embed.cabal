@@ -24,7 +24,11 @@ library
                    , directory          >= 1.0.0.3
                    , template-haskell
                    , filepath
-    exposed-modules: Data.FileEmbed
+    exposed-modules:
+          Data.FileEmbed
+        , Data.FileEmbed.Injection
+        , Data.FileEmbed.RelativePath
+        , Data.FileEmbed.Typed
     ghc-options:     -Wall
 
 test-suite test
