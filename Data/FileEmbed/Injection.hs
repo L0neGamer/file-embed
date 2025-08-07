@@ -63,7 +63,7 @@ padSize i =
 --
 -- This version is typed and requires typed template haskell.
 --
--- @since $ver
+-- @since 0.1.0.0
 dummySpaceTyped :: (Quote m) => Int -> Code m B.ByteString
 dummySpaceTyped = dummySpaceWithTyped "MS"
 
@@ -81,7 +81,7 @@ dummySpace = dummySpaceWith "MS"
 --
 -- This version is typed and requires typed template haskell.
 --
--- @since $ver
+-- @since 0.1.0.0
 dummySpaceWithTyped :: (Quote m) => B.ByteString -> Int -> Code m B.ByteString
 dummySpaceWithTyped postfix space = do
   let size = padSize space

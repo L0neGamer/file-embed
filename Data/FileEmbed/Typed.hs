@@ -68,7 +68,7 @@ import Data.FileEmbed.RelativePath (makeRelativeToProject)
 -- > myFile :: Data.ByteString.ByteString
 -- > myFile = $$(embedFile "dirName/fileName")
 --
--- @since $ver
+-- @since 0.1.0.0
 embedFile :: (Quote m, Quasi m) => FilePath -> Code m B.ByteString
 embedFile fp =
     (qAddDependentFile fp >> qRunIO (B.readFile fp)) `bindCode` bsToExp
@@ -76,7 +76,7 @@ embedFile fp =
 -- | Embed a single file in your source code.
 --   Unlike 'embedFile', path is given relative to project root.
 --
--- @since $ver
+-- @since 0.1.0.0
 embedFileRelative :: (Quote m, Quasi m) => FilePath -> Code m B.ByteString
 embedFileRelative fp = makeRelativeToProject fp `bindCode` embedFile
 
@@ -91,7 +91,7 @@ embedFileRelative fp = makeRelativeToProject fp `bindCode` embedFile
 -- > maybeMyFile :: Maybe Data.ByteString.ByteString
 -- > maybeMyFile = $$(embedFileIfExists "dirName/fileName")
 --
--- @since $ver
+-- @since 0.1.0.0
 embedFileIfExists :: (Quote m, Quasi m) => FilePath -> Code m (Maybe B.ByteString)
 embedFileIfExists fp = do
   maybeFile `bindCode` \case
@@ -117,7 +117,7 @@ embedFileIfExists fp = do
 -- > myFile :: Data.ByteString.ByteString
 -- > myFile = $$(embedOneFileOf [ "dirName/fileName", "src/dirName/fileName" ])
 --
--- @since $ver
+-- @since 0.1.0.0
 embedOneFileOf :: (Quote m, Quasi m) => [FilePath] -> Code m B.ByteString
 embedOneFileOf ps =
   readExistingFile B.readFile ps `bindCode` bsToExp
@@ -143,7 +143,7 @@ readExistingFile readFile' xs = do
 -- > myDir :: [(FilePath, Data.ByteString.ByteString)]
 -- > myDir = $$(embedDir "dirName")
 --
--- @since $ver
+-- @since 0.1.0.0
 embedDir :: (Quasi m, Quote m) => FilePath -> Code m [(FilePath, B.ByteString)]
 embedDir fp = do
   qRunIO (fileList fp) `bindCode` (convertList . fmap (pairToExp fp))
@@ -157,7 +157,7 @@ embedDir fp = do
 -- > myFiles :: [FilePath]
 -- > myFiles = $(embedDirListing "dirName")
 --
--- @since $ver
+-- @since 0.1.0.0
 embedDirListing :: (Quote m, Quasi m) => FilePath -> Code m [FilePath]
 embedDirListing fp = do
   qRunIO (fileList fp) `bindCode` (convertList . fmap (strToExp . fst))
@@ -185,7 +185,7 @@ bsToExp bs =
 -- > myFile :: IsString a => a
 -- > myFile = $$(embedStringFile "dirName/fileName")
 --
--- @since $ver
+-- @since 0.1.0.0
 embedStringFile :: (IsString s, Quote m, Quasi m) => FilePath -> Code m s
 embedStringFile fp = (qAddDependentFile fp >> qRunIO (P.readFile fp)) `bindCode` strToExp
 
@@ -197,7 +197,7 @@ embedStringFile fp = (qAddDependentFile fp >> qRunIO (P.readFile fp)) `bindCode`
 -- first such file. You might try to fix this by doing a clean build or using
 -- GHC's -fforce-recomp flag.
 --
--- @since $ver
+-- @since 0.1.0.0
 embedOneStringFileOf :: (IsString s, Quote m, Quasi m) => [FilePath] -> Code m s
 embedOneStringFileOf ps =
   readExistingFile P.readFile ps `bindCode` strToExp
